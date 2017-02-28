@@ -1,3 +1,4 @@
+
 (A (F f)(F (D d)))
 (C (F e)(C (D f))(C b))
 (A (C (D e))(F f)(F (F (C d))))

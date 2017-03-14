@@ -1,121 +1,51 @@
 import numpy as np
-#import corpus_reader as cr
 import random 
-from keras_dt import *
-from trees import *
+from blockpair import *
+
 
 '''
-REMINDER
-per fare l'hash delle liste è necessario prima trasformarle in stringhe
-facendo quindi hash(str(list)) 
+PreEmbedder take as inputs the Y of a net, the features, a function and the X of a net.
+It applies the function to the X to transofrm it in something else (like a DT for example)
+and then divide the X and the Y in blocks of K elements
+It return a list of K-lenght blocks and a list of K-lenght Y after it shuffled the order of the blocks 
+(but it mantain the corrispondece of blocks and Ys)
 '''
 
-k = 3
-ToSave = {}
 
-
-#Problemi: riuscire a convertire il dt da stringa a vettore quando lo si legge da file
-
-def SaveData(dictionary):
-	with open('SavedTree.txt','w')as data:
-		for key in dictionary.keys():
-			data.write(key + ":"+ str(dictionary[key]).replace('\n', ' ') + "\n")	
-
-
-def readDataFile():
-	with open('SavedTree.txt','r')as data:
-		dictionary = {}
-		for line in data:
-			dictionary[line.split(':')[0]] = line.split(':')[1].strip()
-		print("readed:",dictionary)
-		return dictionary
-
-def functionDot(X):
-	result = 1
-	for item in X:
-		result = np.dot(result, item)
-	return result
+def PreEmbedder(turn, Yargs, features, function, Xargs):
+	k=5
+	count = 0
+	y = 0
+	blocksDT = []
+	k_lenght_blocksDT = []
+	k_lenght_Yargs=[]
+	k_lenght_Ylist = []
+	K_lenght_blocklist = []
+	for i in range(len(Xargs)):
+		blocksDT.append(np.concatenate([features[i],function(Xargs[i],turn)], axis = 0))
+		if(len(blocksDT)) == 10:
+			break
+	for block in blocksDT:
+		K_lenght_blocklist.append(block)
+		k_lenght_Ylist.append(Yargs[y])
+		count = count + 1
+		if(count == k):
+			k_lenght_blocksDT.append(K_lenght_blocklist)
+			k_lenght_Yargs.append(k_lenght_Ylist)
+			count = 0
+			K_lenght_blocklist = []
+			k_lenght_Ylist = []
+		y = y + 1
+	shufflelist = list(zip(k_lenght_blocksDT, k_lenght_Yargs))
+	random.shuffle(shufflelist)
+	k_lenght_blocksDT, k_lenght_Yargs = zip(*shufflelist)
 		
-def fromTree2DT(X):
-	dt = DT(dim=32, lexicalized=True)
-	print(dt)
-	print(dt.dt(X,to_penn = True))
-	return dt.dt(X,to_penn = True)
-
-
-def PreEmbedder(Yargs, function, *Xargs):
-	Trees = []
-	sums = []
-	T = []
-	blocks = {}
-	a = 0
-	for i in Xargs[0]:
-		#print ("i: ",i)
-		if not i in ToSave:
-			result = function(i)
-			Trees.append(result)
-			ToSave[i] = result
-			#print("Saved:",i)
-		else:
-			Trees.append(ToSave[i])
-			#print("taked from the cache: ",i)
-	for i in Trees:
-		T.append(i)
-		a = a+1
-		if(a == k): 
-			blocks[hash(str(T))] = np.sum([T[0],T[1],T[2]], axis = 0) / np.linalg.norm(np.sum([T[0],T[1],T[2]], axis = 0))
-			T = []
-			a = 0
-	print(blocks)
-	return blocks, Yargs	
+	return k_lenght_blocksDT, k_lenght_Yargs	
 
 #main
 
-with open('SampleInput.dat', 'r') as f:
-	tree = [line.replace('\n', '') for line in f.readlines()]
-
-if('' in tree):
-	tree.remove('')
-
-'''
-import sys
-import mainscript
-
-part1Cache = None
-if __name__ == "__main__":
-    while True:
-        if not part1Cache:
-            part1Cache = mainscript.part1()
-        mainscript.part2(part1Cache)
-        print "Press enter to re-run the script, CTRL-C to exit"
-        sys.stdin.readline()
-        reload(mainscript)
-'''
-
-#i != 0 da eliminare, serve solo per non far caricare il file vuoto ed andare in errore alla prima esecuzione
-
-for i in range(2):
-	if not ToSave and i != 0:
-		ToSave = readDataFile()
-		print("ToSave:",ToSave)
-	else:
-		PreEmbedder([],fromTree2DT,tree)
-		
-
-SaveData(ToSave)
 
 
 
 
 
-'''
-for i in range(10):
-	keys = list(Trees.keys())S
-	random.shuffle(keys)
-	print(keys)
-	
-	for key in keys:
-		v = Trees[key]
-		print (PreEmbedder(1, functionDot, v))
-	
-'''

@@ -11,20 +11,23 @@ It return a list of K-lenght blocks and a list of K-lenght Y after it shuffled t
 (but it mantain the corrispondece of blocks and Ys)
 '''
 
+cache = {}
 
-def PreEmbedder(turn, Yargs, features, function, Xargs):
-	k=5
+
+def PreEmbedder(Yargs, features, function, Xargs):
+	k=50
 	count = 0
 	y = 0
+	DT = []
 	blocksDT = []
 	k_lenght_blocksDT = []
 	k_lenght_Yargs=[]
 	k_lenght_Ylist = []
 	K_lenght_blocklist = []
+	
 	for i in range(len(Xargs)):
-		blocksDT.append(np.concatenate([features[i],function(Xargs[i],turn)], axis = 0))
-		if(len(blocksDT)) == 10:
-			break
+		DT = cachesBlocksFromBlockPair(function)(Xargs[i])
+		blocksDT.append(np.concatenate([features[i], DT], axis = 0))
 	for block in blocksDT:
 		K_lenght_blocklist.append(block)
 		k_lenght_Ylist.append(Yargs[y])
@@ -42,7 +45,43 @@ def PreEmbedder(turn, Yargs, features, function, Xargs):
 		
 	return k_lenght_blocksDT, k_lenght_Yargs	
 
-#main
+
+#funzione per decorare la funzione che passo al preembedder che serve a cachare i risultati che ho ottenuto
+def cachesBlocksFromBlockPair(func):
+	def _func(*args):
+		x = args[-1]
+		#lavorare il block per ottenere la chiave della cache assumiamo per ora che sia str(treesBlock)
+		valA = cache.get(str(x.treesA), None)  #restituisce il valore del dizionario con chiave primo argomento oppure il secondo argomento (default)
+		valB = cache.get(str(x.treesB), None)
+		if valA != None and valB != None:
+			return np.concatenate([valA, valB])
+		elif valA == None and valB != None:
+			valA = x.blockOneToDT()
+			cache[str(x.treesA)] = valA
+			return np.concatenate([valA, valB])
+		elif valA != None and valB == None:
+			valB = x.blockTwoToDT()
+			cache[str(x.treesB)] = valB
+			return np.concatenate([valA, valB])
+		else: #valA == None and valB == None
+			value = func(x)
+			cache[str(x.treesA)] = value[:4096]
+			cache[str(x.treesB)] = value[4096:]
+			return value
+	return _func
+	
+
+'''
+
+Passo successivo: Sto forzando il PreEmbedder ad avere come input solo una lista di BlockPair, posso definire un dizionario dove i tipi sono le chiavi e le funzioni decoratrici sono i valori così da selezionare il decoratore giusto a seconda del tipo
+
+'''		
+		
+		
+
+
+
+
 
 
 

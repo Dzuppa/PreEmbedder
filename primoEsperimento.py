@@ -9,11 +9,12 @@ import blockpair as bp
 
 max_num_of_words = 40000
 inputs = []
+base = "standard_split_reduced_3/"
 
-X_train,X_train_specific_features,Y_train,max_value,_,Pairs = cr.read_corpus("Dev-training.txt", "blocks.txt", 3,n_of_words=max_num_of_words)
-'''
-X_test,X_test_specific_features,Y_test,max1,Y_test_table,PairsTest = cr.read_corpus("Dev-testing_full_grouped.txt", "blocks.txt", 3,max_lenght_of=max_value,n_of_words=max_num_of_words)
-'''
+X_train,X_train_specific_features,Y_train,max_value,_,Pairs = cr.read_corpus(base+"Dev-training.txt", base+"blocks.txt", 3,n_of_words=max_num_of_words)
+
+X_test,X_test_specific_features,Y_test,max1,Y_test_table,PairsTest = cr.read_corpus(base+"Dev-testing_full_grouped.txt", base+"blocks.txt", 3,max_lenght_of=max_value,n_of_words=max_num_of_words)
+
 model = Sequential()
 
 model.add(Dense(input_dim=73,output_dim=500, activation='relu'))
@@ -35,7 +36,7 @@ for i in range(1,500):
 	epsilon = 0.001
 	sys.stdout.flush()
 	print("i:", i)
-	inputs, targets = pe.PreEmbedder(i-1,Y_train,X_train_specific_features, bp.Concatenation, Pairs)
+	inputs, targets = pe.PreEmbedder(Y_train,X_train_specific_features, bp.Concatenation, Pairs)
 	
 	inputs_test, targets_test = pe.PreEmbedder(Y_test,X_test_specific_features,bp.Concatenation, PairsTest)
 	
@@ -58,13 +59,13 @@ for i in range(1,500):
 		recall_at_k_res = e.recall_at_k(oracle_table, system_table, k_s = [1,2,5,10,100,1000])
 		
 		if(changed != 0):
+			versus = 0
 			for k in range(3):
 				if(recall_at_k_res[i] < last_kres[i] or (recall_at_k_res[i] - last_kres[i]) < epsilon):
 					versus = versus + 1
 				if(versus > 2):
 					K.set_value(optim.lr, 0.5 * K.get_value(optim.lr))
 					changed = 0
-					break
 		else:
 			changed = 1;
 	

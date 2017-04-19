@@ -25,7 +25,9 @@ class DT:
 		else:
 				tree = t
 		self.__recursion(tree,tensor)
-		return tensor.eval()
+		#return tensor.eval()
+		return tensor
+
 	#compute S(n) with dfs
 	def __recursion(self,t,s):
 		#print t

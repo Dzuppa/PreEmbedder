@@ -34,11 +34,12 @@ class BlockPair:
 	'''
 	method to transform an entire block (block A) of tree in a DT after the transformation of evert tree in a dt
 	'''
-	def blockOneToDT(self):
+	def blockOneToDT(self, dt):
 		T = []
 		if(len(self.treesA) > 1):
 			for t in range(len(self.treesA)):
-				T.append(self.fromTree2DT(self.treesA[t]))	
+				#T.append(self.fromTree2DT(self.treesA[t]))
+				T.append(dt.dt(self.treesA[t]))
 			for i in range(len(T)):
 				if (i != 0):
 					total = np.sum([total, T[i]],axis=0)
@@ -50,11 +51,12 @@ class BlockPair:
 	'''
 	method to transform an entire block (block B) of tree in a DT after the transformation of evert tree in a dt
 	'''
-	def blockTwoToDT(self):
+	def blockTwoToDT(self,dt):
 		T = []
 		if(len(self.treesB) > 1):
 			for t in range(len(self.treesB)):
-				T.append(self.fromTree2DT(self.treesB[t]))
+				#T.append(self.fromTree2DT(self.treesB[t]))
+				T.append(dt.dt(self.treesA[t]))
 			for i in range(len(T)):
 				if (i != 0):
 					total = np.sum([total, T[i]],axis=0)
@@ -65,14 +67,14 @@ class BlockPair:
 	'''
 	Method to concatenate the 2 blocks (transformed in DT) (but before they do the transormation of the tree in dt)
 	'''
-	def Concatenation(self):
-		return np.concatenate([self.blockOneToDT(),self.blockTwoToDT()],axis=0)
+	def Concatenation(self,dt):
+		return np.concatenate([self.blockOneToDT(dt),self.blockTwoToDT(dt)],axis=0)
 
 '''
 Method to call the concatenation method of bp (made for PreEmbedder)
 '''
 
-def Concatenation(bp):
-	return bp.Concatenation()
+def Concatenation(bp,dt):
+	return bp.Concatenation(dt)
 
 

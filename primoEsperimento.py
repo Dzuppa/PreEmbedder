@@ -4,16 +4,17 @@ import keras.optimizers as opt
 import numpy as np
 import sys
 import corpus_reader as cr
-import PreEmbedder as pe
+import PreEmbedderNew as pe
 import blockpair as bp
 
 max_num_of_words = 40000
 inputs = []
-base = "standard_split_reduced_3/"
+#base = "standard_split_reduced_3/"
+base = ""
 
-X_train,X_train_specific_features,Y_train,max_value,_,Pairs = cr.read_corpus(base+"Dev-training.txt", base+"blocks.txt", 3,n_of_words=max_num_of_words)
+X_train,X_train_specific_features,Y_train,max_value,_,Pairs = cr.read_corpus(base+"SMALL_Dev-training.txt", base+"blocks.txt", 3,n_of_words=max_num_of_words)
 
-X_test,X_test_specific_features,Y_test,max1,Y_test_table,PairsTest = cr.read_corpus(base+"Dev-testing_full_grouped.txt", base+"blocks.txt", 3,max_lenght_of=max_value,n_of_words=max_num_of_words)
+X_test,X_test_specific_features,Y_test,max1,Y_test_table,PairsTest = cr.read_corpus(base+"SMALL_Dev-testing_full_grouped.txt", base+"blocks.txt", 3,max_lenght_of=max_value,n_of_words=max_num_of_words)
 
 model = Sequential()
 
@@ -29,6 +30,10 @@ model.add(Dense(output_dim=2, activation='sigmoid'))
 optim = opt.adam(0.0004, 0.9, 0.999)
 
 model.compile(loss='categorical_crossentropy', optimizer=optim, metrics=['accuracy'])
+
+
+treeEmbedder = pe.PreEmbedderNew(function, Xs_with_trees, Ys, Xs_additional_features = None, batchDim = 50)
+
 
 for i in range(1,500):
 	versus = 0

@@ -4,7 +4,7 @@ Created on 26/set/2016
 @author: Fabio Massimo Zanzotto
 '''
 
-import resource
+#import resource
 import keras.preprocessing.text as p
 import keras.preprocessing.sequence as seq
 import sys
@@ -21,7 +21,7 @@ def localpad_sequences(word_sequences , maxlen=None):
         stand_dev = np.sqrt(stat.variance(lens, avglen)) 
         print("Stats ", maxlen,avglen,stand_dev)
         maxlen = np.int(avglen + stand_dev)
-    print("Mem Used (2) ", resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+    #NOWIN print("Mem Used (2) ", resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
     print("Expected Occupancy = " , maxlen, len(word_sequences), maxlen*len(word_sequences)*4/1024)
     
     word_sequences = seq.pad_sequences(word_sequences,maxlen=maxlen,truncating="pre")
@@ -93,10 +93,10 @@ def read_corpus(corpus_file,block_file,block_lenght,n_of_words = 40000,max_lengh
         Y.append(encode_label(line.split(":")[0]))
         Y_labels.append((line.split(":")[1],line.split(":")[2]))
     print("X length ", len(X))
-    print("Mem Used ", resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+    #NOWIN print("Mem Used ", resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
     #X = seq.pad_sequences(X,maxlen=max_lenght_of)
     X = localpad_sequences(X,maxlen=max_lenght_of)
-    print("Padded Mem Used ", resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+    #NOWIN print("Padded Mem Used ", resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
     bf.close()
     max_len = 0
     if len(X) > 0:

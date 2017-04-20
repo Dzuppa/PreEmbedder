@@ -8,15 +8,15 @@ Class to rapresent a pair of blocks. Every block contains a group of trees (Tree
 
 '''
 class BlockPair:	
-	def __init__(self):
+	def __init__(self, dim = 32):
+		self.dim = dim
 		self.treesA = []
 		self.treesB = []
 
 	'''
 	method to transform a syntatix tree (made of words) in a dt
 	'''
-	def fromTree2DT(self,X):
-		dt = DT(dim=4096, lexicalized=True)
+	def fromTree2DT(self,X,dt):
 		return dt.dt(X,to_penn = True)
 
 	def addTreeToBlockOne(self,tree):
@@ -36,13 +36,12 @@ class BlockPair:
 	'''
 	def blockOneToDT(self, dt):
 		T = []
-		if(len(self.treesA) > 1):
+		if(len(self.treesA) > 0):
 			for t in range(len(self.treesA)):
-				#T.append(self.fromTree2DT(self.treesA[t]))
-				T.append(dt.dt(self.treesA[t]))
+				T.append(self.fromTree2DT(self.treesA[t],dt))	
 			for i in range(len(T)):
 				if (i != 0):
-					total = np.sum([total, T[i]],axis=0)
+					total = mySum(total, T[i])
 				else:
 					total = T[i]
 			return total/np.linalg.norm(total)
@@ -51,15 +50,14 @@ class BlockPair:
 	'''
 	method to transform an entire block (block B) of tree in a DT after the transformation of evert tree in a dt
 	'''
-	def blockTwoToDT(self,dt):
+	def blockTwoToDT(self, dt):
 		T = []
-		if(len(self.treesB) > 1):
+		if(len(self.treesB) > 0):
 			for t in range(len(self.treesB)):
-				#T.append(self.fromTree2DT(self.treesB[t]))
-				T.append(dt.dt(self.treesA[t]))
+				T.append(self.fromTree2DT(self.treesB[t],dt))
 			for i in range(len(T)):
 				if (i != 0):
-					total = np.sum([total, T[i]],axis=0)
+					total = mySum(total, T[i])
 				else:
 					total = T[i]
 			return total/np.linalg.norm(total)
@@ -67,14 +65,26 @@ class BlockPair:
 	'''
 	Method to concatenate the 2 blocks (transformed in DT) (but before they do the transormation of the tree in dt)
 	'''
-	def Concatenation(self,dt):
+	def Concatenation(self, dt):
 		return np.concatenate([self.blockOneToDT(dt),self.blockTwoToDT(dt)],axis=0)
 
 '''
 Method to call the concatenation method of bp (made for PreEmbedder)
 '''
 
-def Concatenation(bp,dt):
+def Concatenation(bp, dt):
 	return bp.Concatenation(dt)
+
+def mySum(list1, list2):
+	listSum = []
+	if len(list1) != len(list2):
+		return None;
+	else:
+		for i in range(len(list1)):
+			one = np.float32(list1[i])
+			two = np.float32(list2[i])
+			listSum.append(sum([one,two]))
+		return listSum
+
 
 

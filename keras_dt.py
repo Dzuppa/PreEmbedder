@@ -4,6 +4,7 @@ import numpy.random as rnd
 from keras import backend as K
 from vectors import *
 from trees import *
+from datetime import datetime
 
 
 class DT:
@@ -25,9 +26,7 @@ class DT:
 		else:
 				tree = t
 		self.__recursion(tree,tensor)
-		#return tensor.eval()
-		return tensor
-
+		return tensor.eval()
 	#compute S(n) with dfs
 	def __recursion(self,t,s):
 		#print t
@@ -47,7 +46,7 @@ class DT:
 				res = self.operator(self.vector_generator.get_random_vector(t.label), res,self.permutations)
 
 				if K.backend() == 'theano':
-					s.set_value((s+res).eval())
+					s.set_value(np.float32((s+res).eval()))
 				else:
 					#print 'tf'
 					s.assign((s+res).eval()).eval()

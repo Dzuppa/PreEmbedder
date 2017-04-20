@@ -10,11 +10,9 @@ from trees import *
 
 max_num_of_words = 40000
 inputs = []
-#base = "../standard_split_reduced_3/"
-base = ""
+base = "../standard_split_reduced_3/"
 
-
-X_train,X_train_specific_features,Y_train,max_value,_,Pairs = cr.read_corpus(base+"SMALL_Dev-training.txt", base+"blocks.txt", 3,n_of_words=max_num_of_words)
+X_train,X_train_specific_features,Y_train,max_value,_,Pairs = cr.read_corpus(base+"Dev-training.txt", base+"blocks.txt", 3,n_of_words=max_num_of_words)
 '''
 X_test,X_test_specific_features,Y_test,max1,Y_test_table,PairsTest = cr.read_corpus(base+"Dev-testing_full_grouped.txt", base+"blocks.txt", 3,max_lenght_of=max_value,n_of_words=max_num_of_words)
 '''

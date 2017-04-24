@@ -56,22 +56,23 @@ for i in range(1,500):
 		system_table = e.generate_table(batchTestTable, system_predictions) 
 		recall_at_k_res = e.recall_at_k(oracle_table, system_table, k_s = [1,2,5,10,100,1000])
 		print("recall_at_k_res: ", recall_at_k_res)
-	
-		if(changed != 0):
-			versus = 0
-			for k in range(3):
-				if(recall_at_k_res[i] < last_kres[i] or ((recall_at_k_res[i] - last_kres[i]) != 0 and (recall_at_k_res[i] - last_kres[i]) < epsilon)):
-					versus = versus + 1
-				if(versus > 2):
-					K.set_value(optim.lr, 0.5 * K.get_value(optim.lr))
-					print("Changed lr value")
-					changed = 0
-		else:
-			changed = 1;
 		
-		last_kres = []
-		for w in range(len(recall_at_k_res)):
-			last_kres.append(recall_at_k_res[w])	
-		print("last_kres: ", last_kres)
+		# if(changed != 0):
+			# versus = 0
+			# for k in range(3):
+				# if(recall_at_k_res[i] < last_kres[i] or ((recall_at_k_res[i] - last_kres[i]) != 0 and (recall_at_k_res[i] - last_kres[i]) < epsilon)):
+					# versus = versus + 1
+				# if(versus > 2):
+					# K.set_value(optim.lr, 0.5 * K.get_value(optim.lr))
+					# print("Changed lr value")
+					# changed = 0
+		# else:
+			# changed = 1;
+		
+		# last_kres = []
+		# for w in range(len(recall_at_k_res)):
+			# last_kres.append(recall_at_k_res[w])	
+		# print("last_kres: ", last_kres)
+		
 		peTest.reset()
     

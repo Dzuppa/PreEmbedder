@@ -1,6 +1,7 @@
 import numpy as np
-from keras_dt import *
-from trees import *
+from pydtk.tree import Tree
+from pydtk.dtk import DT
+from pydtk.operation import fast_shuffled_convolution
 import time as time
 
 '''
@@ -17,7 +18,8 @@ class BlockPair:
 	method to transform a syntatix tree (made of words) in a dt
 	'''
 	def fromTree2DT(self,X,dt):
-		return dt.dt(X,to_penn = True)
+		tr = Tree(string=X)
+		return dt.dt(tr)
 
 	def addTreeToBlockOne(self,tree):
 		self.treesA.append(tree)

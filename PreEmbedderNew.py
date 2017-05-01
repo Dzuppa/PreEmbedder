@@ -31,17 +31,18 @@ class PreEmbedderNew:
     def nextBacth(self):
         batchX = []
         batchY = []
+        features = []
         Test_tables = []
         max = (self._batchIndex + 1) * (self._batchDim) if (self._batchIndex + 1) * (self._batchDim) < len(self._listOfIndexes) else len(self._listOfIndexes) - 1
-
         for i in self._listOfIndexes[self._batchIndex * self._batchDim:max] :
             #transform X_i
-            batchX.append(np.concatenate([cachesBlocksFromBlockPair(self._function)(self.dt,self._Xs_with_trees[i]), self._Xs_additional_features[i]], axis=0))
+            batchX.append(cachesBlocksFromBlockPair(self._function)(self.dt,self._Xs_with_trees[i]))
             batchY.append(self._Ys[i])
+            features.append(self._Xs_additional_features[i])
             if self._Y_test_table is not None:
                 Test_tables.append(self._Y_test_table[i])
         self._batchIndex = self._batchIndex + 1
-        return batchX,batchY, Test_tables
+        return batchX,batchY, Test_tables, features
 
     def reset(self):
         #reshaffle examples

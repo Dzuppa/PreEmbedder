@@ -9,7 +9,7 @@ Class to rapresent a pair of blocks. Every block contains a group of trees (Tree
 
 '''
 class BlockPair:	
-	def __init__(self, dim = 32):
+	def __init__(self, dim = 4096):
 		self.dim = dim
 		self.treesA = []
 		self.treesB = []

@@ -21,9 +21,9 @@ X_train,X_train_specific_features,Y_train,max_value,_,Pairs = cr.read_corpus(bas
 X_test,X_test_specific_features,Y_test,max1,Y_test_tables,PairsTest = cr.read_corpus(base+"Dev-testing_full_grouped.txt", base+"blocks.txt", 3,max_lenght_of=max_value,n_of_words=max_num_of_words)
 
 
-penew = pe.PreEmbedderNew(bp.Concatenation, Pairs, Y_train, X_train_specific_features)
+penew = pe.PreEmbedderNew(bp.Concatenation, Pairs, Y_train, X_train_specific_features, batchDim = 200)
 
-peTest = pe.PreEmbedderNew(bp.Concatenation, PairsTest, Y_test, X_test_specific_features, Y_test_table = Y_test_tables)
+peTest = pe.PreEmbedderNew(bp.Concatenation, PairsTest, Y_test, X_test_specific_features, Y_test_table = Y_test_tables, batchDim = 200)
 
 
 blocks_model = Sequential()

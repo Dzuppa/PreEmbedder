@@ -20,7 +20,7 @@ class PreEmbedderNew:
         self._Y_test_table = Y_test_table
         self._batchIndex = 0
         self._listOfIndexes = list(range(len(Xs_with_trees)))
-        self.dt = DT(dimension=32, LAMBDA= 0.6, operation=fast_shuffled_convolution)
+        self.dt = DT(dimension=4096, LAMBDA= 0.6, operation=fast_shuffled_convolution)
         random.shuffle(self._listOfIndexes)
 
 

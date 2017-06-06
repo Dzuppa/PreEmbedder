@@ -14,7 +14,8 @@ import keras.backend as K
 max_num_of_words = 40000
 inputs = []
 
-base = "../standard_split_reduced_3/"
+#base = "../standard_split_reduced_3/"
+base = ""
 
 X_train,X_train_specific_features,Y_train,max_value,_,Pairs = cr.read_corpus(base+"Dev-training.txt", base+"blocks.txt", 3,n_of_words=max_num_of_words)
 
@@ -33,7 +34,7 @@ feature_model = Sequential()
 final_model = Sequential()
 
 
-blocks_model.add(Dense(input_dim=2048,output_dim=300, activation='relu'))
+blocks_model.add(Dense(input_dim=8192,output_dim=300, activation='relu'))
 blocks_model.add(Dropout(0.5))
 blocks_model.add(Dense(300, activation='relu'))
 
@@ -66,7 +67,7 @@ for i in range(1,500):
 		batchx = np.asarray(batchx)
 		batchy = np.asarray(batchy)
 		featuresTrain = np.asarray(featuresTrain)
-		final_model.fit([batchx, featuresTrain], batchy, nb_epoch=1, batch_size=50,class_weight=[0.999,0.001],verbose=0)
+		final_model.fit([batchx, featuresTrain], batchy, nb_epoch=1, batch_size=50,class_weight=[0.999,0.001],verbose=1)
 	penew.reset()
 
 	while(peTest.hasNextBatch()):
